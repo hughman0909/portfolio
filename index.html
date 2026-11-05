@@ -6,15 +6,16 @@
     <title>Hinata's special rev room</title>
 </head>
 <body>
+    <nav aria-label="Language" style="position: absolute; top: 8px; right: 8px;">
+        <button type="button" id="language-toggle" lang="ja" aria-label="日本語に切り替え">日本語</button>
+    </nav>
     <h1>Hinata's room</h1>
     <h2>Intro</h2>
-    <p>Hi, I mainly study cybersecurity and low-level concepts. I usually code in C, Python, Java and Rust.
-        I love reversing, malware analysis, threat intelligence and red teaming. 
-        <br><br> I am currently interested in making these (not made yet) </p>
-    <ul>
-        <li>A tool for obfuscating a binary</li>
-        <li>An emulator for deobfuscating a binary</li>
-    </ul>
+    <p>Hi, I mainly study cybersecurity in Japanese University. <br>
+        I usually code in Python, Java and sometimes C/C++/Asm. <br>
+        I am currently interested in... <br>
+        reversing, obfuscation, malware analysis, threat intelligence,
+        red teaming, ML, LLM.
     
     <p>These are my acc
         <br>
@@ -29,11 +30,11 @@
         <a href="https://medium.com/@hinata_malsec09">Medium</a>
     </p>
     <h2>Activities</h2>
-    <p>These are things I have done since entering uni.</p>
         <ul>
-            <li>Three hackathons (won in one of them), and an on-campus hackathon as a mentor</li>
-            <li>Seccamp 2026 Connect(Device), Seccamp 2026 National Convention(Threat Analysis), Seccamp 2026 Mini at Ibaraki as a tutor.</li>
+            <li>Four hackathons (won in two of them), and an on-campus hackathon as a mentor</li>
+            <li>Seccamp 2026 Connect (Device), Seccamp 2026 National Convention (Threat Analysis), Seccamp 2026 Mini at Ibaraki as a tutor.</li>
             <li>SECCON Beginners CTF 2026 <a href="https://zenn.dev/hugh_malsec09/articles/796864fde5cb40">(Solved all revs)</a></li>
+            <li>FFRI × NFLabs. Cybersecurity Challenge 2026 <a href="https://zenn.dev/hugh_malsec09/articles/b830139a9c5fdf">(Solved all malware analysis)</a></li>
             <li>Worked in web development startup as an intern for 4 months</li>
             <li>Participated in try! Swift Tokyo 2026</li>
         </ul>
@@ -45,9 +46,6 @@
         <br><br>
         In the workshop, they learned how to use tools and how to approach a binary. In the end, they solved a ctf like binary by themselves. </p>
         <p>This is the <a href="https://github.com/hughman0909/sacw">source</a>. It is for beginners, so not really hard.</p>
-    <h3>Making a self-made emulator in Rust</h3>
-    <p>I wanted to build my own emulator, so I picked up <a href="https://book.mynavi.jp/ec/products/detail/id=41347">this book</a> to understand how emulators work. It was extremely fun to read and I finished it in three days. Using what I learned, I am rewriting my own emulator in Rust with a little help from AI.</p>
-    <p>You can see this work <a href="https://github.com/hughman0909/remu4mal">here</a>.</p>
 
     <h2>Others</h2>
     <p>I have FE and TOEIC950.
@@ -56,14 +54,57 @@
     <ul>
         <li>Participate in Global Cybersecurity Camp</li>
         <li>Participate in Connect as a tutor</li>
-        <li>Pass RISS</li>    
-        <li>Participate in Bug Hunting</li>
-        <li>Create a basic emulator for the purpose above</li>
+        <li>Pass RISS</li>
+        <li>Study Rev>>>>>HTB, Pwn, AI Security, LLM, ML</li>
     </ul>
-    <p>
-        At least, one of them should be ... done.
-        I prefer dogs to cats. I love listening to music. 
-        <br> I also love watching and playing football.
-    </p>
+    <script>
+        const translations = [
+            ["h1", "Hinata's room"],
+            ["h2:nth-of-type(1)", "自己紹介"],
+            ["body > p:nth-of-type(1)", "こんにちは。日本の大学で主にサイバーセキュリティを学んでいます。<br>普段はPythonやJavaでコードを書き、ときどきC/C++/アセンブリも使います。<br>現在は、リバースエンジニアリング、難読化、マルウェア解析、脅威インテリジェンス、レッドチーミング、機械学習、LLMに興味があります。"],
+            ["h2:nth-of-type(2)", "活動"],
+            ["body > ul:nth-of-type(1) > li:nth-child(1)", "ハッカソンに4回参加（うち2回で受賞）。学内ハッカソンではメンターを担当"],
+            ["body > ul:nth-of-type(1) > li:nth-child(2)", "セキュリティ・キャンプ2026 コネクト（デバイス）、全国大会（脅威解析）に参加。ミニ（茨城）ではチューターを担当"],
+            ["body > ul:nth-of-type(1) > li:nth-child(3)", 'SECCON Beginners CTF 2026 <a href="https://zenn.dev/hugh_malsec09/articles/796864fde5cb40">（rev問題を全問解答）</a>'],
+            ["body > ul:nth-of-type(1) > li:nth-child(4)", 'FFRI × NFLabs. Cybersecurity Challenge 2026 <a href="https://zenn.dev/hugh_malsec09/articles/b830139a9c5fdf">（マルウェア解析問題を全問解答）</a>'],
+            ["body > ul:nth-of-type(1) > li:nth-child(5)", "Web開発のスタートアップで4か月間インターンとして勤務"],
+            ["body > ul:nth-of-type(1) > li:nth-child(6)", "try! Swift Tokyo 2026に参加"],
+            ["h2:nth-of-type(3)", "プロジェクト"],
+            ["h3", "学内での表層解析ワークショップ"],
+            ["body > p:nth-of-type(3)", "初心者向けのワークショップを開催する機会があり、表層解析をテーマに選びました。参加者の皆さんに楽しんでいただけたようで、うれしかったです。<br><br>ワークショップでは、ツールの使い方やバイナリへのアプローチ方法を学び、最後にはCTF形式のバイナリ問題を自力で解いてもらいました。"],
+            ["body > p:nth-of-type(4)", 'こちらが<a href="https://github.com/hughman0909/sacw">ソースコード</a>です。初心者向けなので、難易度はそれほど高くありません。'],
+            ["h2:nth-of-type(4)", "その他"],
+            ["body > p:nth-of-type(5)", "基本情報技術者試験に合格し、TOEICは950点です。大学2年次の目標は以下のとおりです。"],
+            ["body > ul:nth-of-type(2) > li:nth-child(1)", "Global Cybersecurity Campに参加する"],
+            ["body > ul:nth-of-type(2) > li:nth-child(2)", "コネクトにチューターとして参加する"],
+            ["body > ul:nth-of-type(2) > li:nth-child(3)", "情報処理安全確保支援士試験に合格する"],
+            ["body > ul:nth-of-type(2) > li:nth-child(4)", "Revを最優先に、HTB、Pwn、AIセキュリティ、LLM、機械学習を勉強する"],
+        ].map(([selector, ja]) => {
+            const element = document.querySelector(selector);
+            return { element, en: element.innerHTML, ja };
+        });
+        const accounts = document.querySelector("body > p:nth-of-type(2)").firstChild;
+        const englishAccounts = accounts.textContent;
+        const englishTitle = document.title;
+        const toggle = document.getElementById("language-toggle");
+        function setLanguage(language) {
+            const japanese = language === "ja";
+            document.documentElement.lang = japanese ? "ja" : "en";
+            document.title = japanese ? "Hinataの特別なrev部屋" : englishTitle;
+            translations.forEach(({ element, en, ja }) => {
+                element.innerHTML = japanese ? ja : en;
+            });
+            accounts.textContent = japanese ? "各種アカウント" : englishAccounts;
+            toggle.textContent = japanese ? "English" : "日本語";
+            toggle.lang = japanese ? "en" : "ja";
+            toggle.setAttribute("aria-label", japanese ? "Switch to English" : "日本語に切り替え");
+        }
+        toggle.addEventListener("click", () => {
+            const language = document.documentElement.lang === "en" ? "ja" : "en";
+            setLanguage(language);
+            try { localStorage.setItem("portfolio-language", language); } catch {}
+        });
+        try { setLanguage(localStorage.getItem("portfolio-language") === "ja" ? "ja" : "en"); } catch { setLanguage("en"); }
+    </script>
 </body>
 </html>
