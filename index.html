@@ -1,110 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hinata's special rev room</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#121519" />
+  <meta name="description" content="Hinata’s room. Cybersecurity, reverse engineering, workshops, and CTF activities." />
+  <title>Hinata’s special rev room</title>
+  <link rel="stylesheet" href="vendor/highlight-github-dark.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="vendor/markdown-it.min.js" defer></script>
+  <script src="vendor/purify.min.js" defer></script>
+  <script src="vendor/highlight.min.js" defer></script>
+  <script src="vendor/highlight-x86asm.min.js" defer></script>
+  <script src="content.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
-    <nav aria-label="Language" style="position: absolute; top: 8px; right: 8px;">
-        <button type="button" id="language-toggle" lang="ja" aria-label="日本語に切り替え">日本語</button>
-    </nav>
-    <h1>Hinata's room</h1>
-    <h2>Intro</h2>
-    <p>Hi, I mainly study cybersecurity in Japanese University. <br>
-        I usually code in Python, Java and sometimes C/C++/Asm. <br>
-        I am currently interested in... <br>
-        reversing, obfuscation, malware analysis, threat intelligence,
-        red teaming, ML, LLM.
-    
-    <p>These are my acc
-        <br>
-        <a href="https://x.com/hughman_malsec">Twitter(x)</a>
-        &nbsp;&nbsp;
-        <a href="https://github.com/hughman0909">Github</a>
-        &nbsp;&nbsp;
-        <a href="https://qiita.com/malsec_hugh09">Qiita</a>
-        &nbsp;&nbsp;
-        <a href="https://zenn.dev/hugh_malsec09">Zenn</a>
-        &nbsp;&nbsp;
-        <a href="https://medium.com/@hinata_malsec09">Medium</a>
-    </p>
-    <h2>Activities</h2>
-        <ul>
-            <li>Four hackathons (won in two of them), and an on-campus hackathon as a mentor</li>
-            <li>Seccamp 2026 Connect (Device), Seccamp 2026 National Convention (Threat Analysis), Seccamp 2026 Mini at Ibaraki as a tutor.</li>
-            <li>SECCON Beginners CTF 2026 <a href="https://zenn.dev/hugh_malsec09/articles/796864fde5cb40">(Solved all revs)</a></li>
-            <li>FFRI × NFLabs. Cybersecurity Challenge 2026 <a href="https://zenn.dev/hugh_malsec09/articles/b830139a9c5fdf">(Solved all malware analysis)</a></li>
-            <li>Worked in web development startup as an intern for 4 months</li>
-            <li>Participated in try! Swift Tokyo 2026</li>
-        </ul>
-    <h2>Projects</h2>
-    <h3>Surface Analysis On Campus</h3>
-    <p>I had an opportunity to hold a workshop for beginners, 
-        so I chose surface analysis as my workshop topic.
-        Participants seemed to enjoy it while taking the workshop, so it was great.
-        <br><br>
-        In the workshop, they learned how to use tools and how to approach a binary. In the end, they solved a ctf like binary by themselves. </p>
-        <p>This is the <a href="https://github.com/hughman0909/sacw">source</a>. It is for beginners, so not really hard.</p>
+  <div class="app-window">
+    <header class="chrome">
+      <div class="titlebar">
+        <a class="app-identity" href="#about" aria-label="ポートフォリオのホーム" data-i18n-aria="home">
+          <span class="appmark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+          <span><strong>Hinata’s room</strong><span class="identity-suffix"> / special rev room</span></span>
+        </a>
+        <div class="chrome-right"><span class="activity-dot" aria-hidden="true"></span><span>REV &gt;&gt;&gt;&gt;&gt; EVERYTHING</span><div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang="ja" lang="ja" aria-pressed="true">日本語</button><button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button></div></div>
+      </div>
+      <div class="toolbar" aria-label="Workspace toolbar">
+        <div class="breadcrumbs"><span class="crumb-dim">workspace</span><span class="crumb-sep">/</span><strong>portfolio</strong><span class="crumb-sep">/</span><span id="current-location">about</span></div>
+      </div>
+    </header>
 
-    <h2>Others</h2>
-    <p>I have FE and TOEIC950.
-        My goals for my second year in uni are
-    </p>
-    <ul>
-        <li>Participate in Global Cybersecurity Camp</li>
-        <li>Participate in Connect as a tutor</li>
-        <li>Pass RISS</li>
-        <li>Study Rev>>>>>HTB, Pwn, AI Security, LLM, ML</li>
-    </ul>
-    <script>
-        const translations = [
-            ["h1", "Hinata's room"],
-            ["h2:nth-of-type(1)", "自己紹介"],
-            ["body > p:nth-of-type(1)", "こんにちは。日本の大学で主にサイバーセキュリティを学んでいます。<br>普段はPythonやJavaでコードを書き、ときどきC/C++/アセンブリも使います。<br>現在は、リバースエンジニアリング、難読化、マルウェア解析、脅威インテリジェンス、レッドチーミング、機械学習、LLMに興味があります。"],
-            ["h2:nth-of-type(2)", "活動"],
-            ["body > ul:nth-of-type(1) > li:nth-child(1)", "ハッカソンに4回参加（うち2回で受賞）。学内ハッカソンではメンターを担当"],
-            ["body > ul:nth-of-type(1) > li:nth-child(2)", "セキュリティ・キャンプ2026 コネクト（デバイス）、全国大会（脅威解析）に参加。ミニ（茨城）ではチューターを担当"],
-            ["body > ul:nth-of-type(1) > li:nth-child(3)", 'SECCON Beginners CTF 2026 <a href="https://zenn.dev/hugh_malsec09/articles/796864fde5cb40">（rev問題を全問解答）</a>'],
-            ["body > ul:nth-of-type(1) > li:nth-child(4)", 'FFRI × NFLabs. Cybersecurity Challenge 2026 <a href="https://zenn.dev/hugh_malsec09/articles/b830139a9c5fdf">（マルウェア解析問題を全問解答）</a>'],
-            ["body > ul:nth-of-type(1) > li:nth-child(5)", "Web開発のスタートアップで4か月間インターンとして勤務"],
-            ["body > ul:nth-of-type(1) > li:nth-child(6)", "try! Swift Tokyo 2026に参加"],
-            ["h2:nth-of-type(3)", "プロジェクト"],
-            ["h3", "学内での表層解析ワークショップ"],
-            ["body > p:nth-of-type(3)", "初心者向けのワークショップを開催する機会があり、表層解析をテーマに選びました。参加者の皆さんに楽しんでいただけたようで、うれしかったです。<br><br>ワークショップでは、ツールの使い方やバイナリへのアプローチ方法を学び、最後にはCTF形式のバイナリ問題を自力で解いてもらいました。"],
-            ["body > p:nth-of-type(4)", 'こちらが<a href="https://github.com/hughman0909/sacw">ソースコード</a>です。初心者向けなので、難易度はそれほど高くありません。'],
-            ["h2:nth-of-type(4)", "その他"],
-            ["body > p:nth-of-type(5)", "基本情報技術者試験に合格し、TOEICは950点です。大学2年次の目標は以下のとおりです。"],
-            ["body > ul:nth-of-type(2) > li:nth-child(1)", "Global Cybersecurity Campに参加する"],
-            ["body > ul:nth-of-type(2) > li:nth-child(2)", "コネクトにチューターとして参加する"],
-            ["body > ul:nth-of-type(2) > li:nth-child(3)", "情報処理安全確保支援士試験に合格する"],
-            ["body > ul:nth-of-type(2) > li:nth-child(4)", "Revを最優先に、HTB、Pwn、AIセキュリティ、LLM、機械学習を勉強する"],
-        ].map(([selector, ja]) => {
-            const element = document.querySelector(selector);
-            return { element, en: element.innerHTML, ja };
-        });
-        const accounts = document.querySelector("body > p:nth-of-type(2)").firstChild;
-        const englishAccounts = accounts.textContent;
-        const englishTitle = document.title;
-        const toggle = document.getElementById("language-toggle");
-        function setLanguage(language) {
-            const japanese = language === "ja";
-            document.documentElement.lang = japanese ? "ja" : "en";
-            document.title = japanese ? "Hinataの特別なrev部屋" : englishTitle;
-            translations.forEach(({ element, en, ja }) => {
-                element.innerHTML = japanese ? ja : en;
-            });
-            accounts.textContent = japanese ? "各種アカウント" : englishAccounts;
-            toggle.textContent = japanese ? "English" : "日本語";
-            toggle.lang = japanese ? "en" : "ja";
-            toggle.setAttribute("aria-label", japanese ? "Switch to English" : "日本語に切り替え");
-        }
-        toggle.addEventListener("click", () => {
-            const language = document.documentElement.lang === "en" ? "ja" : "en";
-            setLanguage(language);
-            try { localStorage.setItem("portfolio-language", language); } catch {}
-        });
-        try { setLanguage(localStorage.getItem("portfolio-language") === "ja" ? "ja" : "en"); } catch { setLanguage("en"); }
-    </script>
+    <div class="editor-tabs" role="tablist" aria-label="Portfolio sections">
+      <button class="editor-tab active" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="true" data-tab="about" tabindex="0"><span class="tab-fileicon">◈</span> about <span class="tab-ext">.txt</span></button>
+      <button class="editor-tab" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="false" data-tab="projects" tabindex="-1"><span class="tab-fileicon">▦</span> projects <span class="tab-ext">.rs</span></button>
+      <button class="editor-tab" role="tab" id="tab-writeups" aria-controls="panel-writeups" aria-selected="false" data-tab="writeups" tabindex="-1"><span class="tab-fileicon">▤</span> writeups <span class="tab-ext">.md</span></button>
+      <button class="editor-tab" role="tab" id="tab-contact" aria-controls="panel-contact" aria-selected="false" data-tab="contact" tabindex="-1"><span class="tab-fileicon">◇</span> contact</button>
+      <div class="tabbar-spacer" aria-hidden="true"></div>
+      <span class="tabbar-caption">TAB / WORKSPACE</span>
+    </div>
+
+    <main id="main" class="editor-area">
+      <section class="view" id="panel-about" role="tabpanel" aria-labelledby="tab-about">
+        <div class="about-columns"><section class="readme">
+          <h1 class="profile-name"><span data-i18n="profileName">山口 暖</span> <span class="profile-reading" data-i18n="profileReading">（Hinata Yamaguchi）</span></h1>
+          <div class="subheading">01 / INTRO</div>
+          <p data-i18n="intro">セキュリティ好きの学生です。主にReversing、AI、脅威関連のセキュリティに興味があります。</p>
+          <div class="subheading">02 / ACTIVITIES</div>
+          <ul class="profile-list">
+            <li><span data-i18n="act1">ハッカソンに4回参加（うち2回で受賞）。学内ハッカソンではメンターを担当</span></li>
+            <li><span data-i18n="act2">セキュリティ・キャンプ2026 コネクト（デバイス）、全国大会（脅威解析）に参加、ミニ（茨城）ではチューターとして参加</span></li>
+            <li><span>SECCON Beginners CTF 2026 <a href="https://zenn.dev/hugh_malsec09/articles/796864fde5cb40" target="_blank" rel="noopener noreferrer" data-i18n="act3">rev問題を中心に解答 ↗</a></span></li>
+            <li><span>FFRI × NFLabs. Cybersecurity Challenge 2026 <a href="https://zenn.dev/hugh_malsec09/articles/b830139a9c5fdf" target="_blank" rel="noopener noreferrer" data-i18n="act4">マルウェア解析問題を中心に解答 ↗</a></span></li>
+            <li><span data-i18n="act5">Web開発のスタートアップで4か月間インターンとして勤務</span></li>
+            <li><span data-i18n="act6">try! Swift Tokyo 2026に参加</span></li>
+          </ul>
+          <div class="subheading">03 / SECOND-YEAR GOALS</div>
+          <ul class="profile-list"><li data-i18n="goal1">Global Cybersecurity Campに参加する</li><li data-i18n="goal2">コネクトにチューターとして参加する</li><li data-i18n="goal3">情報処理安全確保支援士試験に合格する</li><li data-i18n="goal4">Revを最優先に、HTB、Pwn、AIセキュリティ、LLM、機械学習を勉強する</li></ul>
+        </section><div class="about-side-stack"><figure class="frenchie-card">
+          <figcaption>Cutest ever living</figcaption>
+          <img src="frenchie.JPG" alt="Cutest Frenchie" />
+        </figure><aside class="readme-aside"><div class="pane-heading">Properties</div><div class="aside-content">
+          <div class="property-row"><span>languages</span><strong>Python / Java >> / C / C++ / Asm >> Rust / Go</strong></div>
+          <div class="property-row"><span>certification</span><strong>FE / TOEIC 950</strong></div>
+          <div class="property-row"><span>hobbies</span><strong data-i18n="hobbies">音楽 / サッカー</strong></div>
+          <div class="property-row"><span>interests</span><strong>Reversing / Obfuscation / Malware Analysis / Threat Intelligence / Red Teaming / ML / LLM</strong></div>
+        </div></aside></div></div>
+      </section>
+
+      <section class="view workbench-view" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+        <div class="project-workbench">
+          <aside class="project-explorer" aria-label="Project Explorer">
+            <div class="pane-heading"><span>Project Explorer</span><span class="pane-icons">⌕</span></div>
+            <nav class="project-nav" data-tree></nav>
+          </aside>
+          <article class="project-document" aria-live="polite">
+            <div class="document-bar"><span data-doc-label></span><span class="doc-meta"><span>READ ONLY</span><button type="button" class="doc-expand" data-expand aria-pressed="false"><span class="expand-on" data-i18n="expand">⤢ 全画面</span><span class="expand-off" data-i18n="collapse">⤡ 戻る</span></button></span></div>
+            <div class="project-article-inner" data-doc></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view workbench-view" id="panel-writeups" role="tabpanel" aria-labelledby="tab-writeups" hidden>
+        <div class="project-workbench">
+          <aside class="project-explorer" aria-label="Writeups">
+            <div class="pane-heading"><span>Writeups</span><span class="pane-icons">⌕</span></div>
+            <nav class="project-nav" data-tree></nav>
+          </aside>
+          <article class="project-document" aria-live="polite">
+            <div class="document-bar"><span data-doc-label></span><span class="doc-meta"><span>READ ONLY</span><button type="button" class="doc-expand" data-expand aria-pressed="false"><span class="expand-on" data-i18n="expand">⤢ 全画面</span><span class="expand-off" data-i18n="collapse">⤡ 戻る</span></button></span></div>
+            <div class="project-article-inner" data-doc></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="panel-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+        <div class="contact-panel">
+          <div class="pane-heading"><span>Connections</span><span aria-hidden="true">↗</span></div>
+          <div class="contact-body">
+            <div class="subheading">01 / GET IN TOUCH</div>
+            <h1 class="contact-title">Let's connect.</h1>
+            <p class="contact-description" data-i18n="contactIntro">インターン・アルバイト、開発やセキュリティに関するご連絡はこちらから。</p>
+            <div class="contact-email-row">
+              <span class="contact-email">malsechugh09 [at] gmail.com</span>
+            </div>
+            <div class="contact-section-heading"><span>02 / EXTERNAL LINKS</span><span>5 ENTRIES</span></div>
+            <div id="contact-list" class="contact-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="statusbar"><span class="status-joke">still unpacking...</span></footer>
+  </div>
 </body>
 </html>

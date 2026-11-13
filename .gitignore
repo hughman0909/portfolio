@@ -3,3 +3,32 @@ dist/
 .astro/
 .DS_Store
 *.log
+projects/sample.md
+writeups/sample.md
+writeups/sample.en.md
+projects/sample.en.md
+
+# Local agent instructions and settings
+AGENTS.md
+AGENT.md
+CLAUDE.md
+.AGENT*
+.CLAUDE*
+.agents/
+.claude/
+.codex/
+
+# Credentials and local environment
+.env
+.env.*
+!.env.example
+.aws/
+.ssh/
+*.pem
+*.key
+
+# Editor and temporary files
+.idea/
+.vscode/
+*.bak
+*~
