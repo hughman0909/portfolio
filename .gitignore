@@ -32,3 +32,6 @@ CLAUDE.md
 .vscode/
 *.bak
 *~
+
+# Local content-list launcher
+/update-content.command

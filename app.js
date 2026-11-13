@@ -7,7 +7,7 @@ const $$ = (selector, root=document) => Array.from(root.querySelectorAll(selecto
 const node = (tag, cls, text) => { const el=document.createElement(tag); if(cls)el.className=cls; if(text!==undefined)el.textContent=text; return el; };
 const isValidUrl = (value) => { try { return new URL(value).protocol==='https:'; } catch { return false; } };
 const panel = (name) => $('#panel-'+name);
-const stackedLayout = matchMedia('(max-width:760px), (orientation:portrait) and (max-width:1100px)');
+const mobileLayout = matchMedia('(max-width:699px)');
 let lang = 'ja';
 let currentTab = null;
 
@@ -136,11 +136,18 @@ function renderTree(name) {
     children.append(b);
   });
   $('[data-tree]',panel(name)).replaceChildren(node('div','tree-dir','▾ '+root), children);
+  const picker=$('[data-file-picker]',panel(name));
+  picker.replaceChildren(...items.map(localized).map(item=>{
+    const option=node('option','',[item.number,item.title].filter(Boolean).join(' / ')); option.value=item.id; return option;
+  }));
+  picker.disabled=!items.length;
+  picker.value=active[name] || items[0]?.id || '';
 }
 function showItem(name,id) {
   const c=collections[name];
   const found=c.items.find(i=>i.id===id) || c.items[0]; if(!found)return;
   active[name]=found.id;
+  $('[data-file-picker]',panel(name)).value=found.id;
   const item=localized(found), root=panel(name);
   $('[data-doc-label]',root).textContent=c.label(item);
   const doc=$('[data-doc]',root); doc.replaceChildren(...c.render(item)); doc.scrollTop=0;
@@ -174,7 +181,10 @@ async function listMarkdownFiles(name) {
   return { files: tree.filter(f=>f.type==='blob' && f.path.startsWith(name+'/') && f.path.endsWith('.md')).map(f=>f.path.slice((name+'/').length)) };
 }
 function showCollectionMessage(name,ja,en) {
+  collections[name].message={ja,en};
   const root=panel(name);
+  const picker=$('[data-file-picker]',root);
+  picker.replaceChildren(node('option','',lang==='en'?en:ja)); picker.disabled=true;
   $('[data-tree]',root).replaceChildren(node('div','tree-dir','▾ '+name+'/'));
   $('[data-doc-label]',root).textContent=name+'/';
   $('[data-doc]',root).replaceChildren(node('p','muted-placeholder',lang==='en'?en:ja));
@@ -203,6 +213,7 @@ async function loadMarkdownCollection(name) {
         : String(b.date||'').localeCompare(String(a.date||'')) || a.id.localeCompare(b.id));
     collections[name].items.splice(0, Infinity, ...items);
     if(!items.length) return showCollectionMessage(name,name+'/ に .md ファイルがまだありません。','No .md files in '+name+'/ yet.');
+    delete collections[name].message;
     renderTree(name); showItem(name,active[name]);
     if(dev && !window.__reloadStream) window.__reloadStream=Object.assign(new EventSource('/__reload'),{ onmessage:()=>location.reload() });
   } catch {
@@ -239,9 +250,9 @@ function setTab(name, updateHash=false) {
   $$('[data-tab]').forEach(b=>{ const selected=b.dataset.tab===name; b.classList.toggle('active',selected); b.setAttribute('aria-selected',String(selected)); b.tabIndex=selected?0:-1; });
   tabs.forEach(t=>panel(t).hidden=t!==name);
   $('#current-location').textContent=name;
-  if(name!==currentTab) { $('#main').scrollTop=0; setFocus(false); }
+  if(name!==currentTab) { $('#main').scrollTop=0; if(mobileLayout.matches) window.scrollTo({top:0}); setFocus(false); }
   currentTab=name;
-  if(updateHash) { const target='#'+name+(collections[name] ? '/'+active[name] : ''); if(location.hash!==target) history.pushState(null,'',target); }
+  if(updateHash) { const target='#'+name+(collections[name] && active[name] ? '/'+active[name] : ''); if(location.hash!==target) history.pushState(null,'',target); }
 }
 function setLanguage(next) {
   lang=next==='en'?'en':'ja';
@@ -250,7 +261,10 @@ function setLanguage(next) {
   $$('[data-i18n]').forEach(el=>el.textContent=dict[el.dataset.i18n] ?? original.get(el));
   $$('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label',dict[el.dataset.i18nAria] ?? original.get(el)));
   $$('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
-  Object.keys(collections).forEach(name=>{ if(collections[name].items.length){ renderTree(name); showItem(name,active[name]); } });
+  Object.keys(collections).forEach(name=>{
+    if(collections[name].items.length){ renderTree(name); showItem(name,active[name]); }
+    else if(collections[name].message) { const {ja,en}=collections[name].message; showCollectionMessage(name,ja,en); }
+  });
   try { localStorage.setItem('lang',lang); } catch {}
 }
 function readLocation() {
@@ -264,6 +278,11 @@ renderContact();
 let savedLang=null; try { savedLang=localStorage.getItem('lang'); } catch {}
 setLanguage(savedLang); readLocation(); Object.keys(collections).forEach(loadMarkdownCollection);
 window.addEventListener('popstate',readLocation);
+// The native mobile picker stays one control tall regardless of the article count.
+$$('[data-file-picker]').forEach(picker=>picker.addEventListener('change',()=>{
+  const name=picker.dataset.filePicker;
+  showItem(name,picker.value); setTab(name,true);
+}));
 document.addEventListener('keydown',event=>{ if(event.key==='Escape')setFocus(false); });
 document.addEventListener('click',event=>{
   const langButton=event.target.closest('[data-lang]');
@@ -274,7 +293,6 @@ document.addEventListener('click',event=>{
   if(select) {
     const [name,...rest]=select.dataset.select.split('/'); const id=rest.join('/');
     showItem(name,id); setTab(name,true);
-    if(stackedLayout.matches) $('.project-document',panel(name)).scrollIntoView({block:'start'});
     return;
   }
   const tab=event.target.closest('[data-tab]');

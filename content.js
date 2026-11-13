@@ -11,6 +11,9 @@ window.PORTFOLIO_CONTENT = {
   en: {
     home: 'Portfolio home',
     profileName: 'Hinata Yamaguchi',
+    projectSelect: 'PROJECT EXPLORER / Select a file',
+    writeupSelect: 'WRITEUPS / Select a file',
+    editorStatus: 'UTF-8 / EN',
     profileReading: '',
     contactIntro: 'For internships, part-time work, development, or security — get in touch.',
     intro: 'I\'m a student who loves security, mainly interested in reversing, AI security, and threat-related security.',
