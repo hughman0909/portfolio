@@ -14,8 +14,9 @@
   <script src="vendor/highlight-x86asm.min.js" defer></script>
   <script src="content.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="motion.js" defer></script>
 </head>
-<body>
+<body class="portfolio-page">
   <div class="app-window">
     <header class="chrome">
       <div class="titlebar">
@@ -30,17 +31,19 @@
       </div>
     </header>
 
-    <div class="editor-tabs" role="tablist" aria-label="Portfolio sections">
-      <button class="editor-tab active" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="true" data-tab="about" tabindex="0"><span class="tab-fileicon">◈</span> about <span class="tab-ext">.txt</span></button>
-      <button class="editor-tab" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="false" data-tab="projects" tabindex="-1"><span class="tab-fileicon">▦</span> projects <span class="tab-ext">.rs</span></button>
-      <button class="editor-tab" role="tab" id="tab-writeups" aria-controls="panel-writeups" aria-selected="false" data-tab="writeups" tabindex="-1"><span class="tab-fileicon">▤</span> writeups <span class="tab-ext">.md</span></button>
-      <button class="editor-tab" role="tab" id="tab-contact" aria-controls="panel-contact" aria-selected="false" data-tab="contact" tabindex="-1"><span class="tab-fileicon">◇</span> contact</button>
-      <div class="tabbar-spacer" aria-hidden="true"></div>
-      <span class="tabbar-caption">TAB / WORKSPACE</span>
-    </div>
+    <nav class="section-nav" aria-label="Main navigation">
+      <a href="#about" data-section="about">About</a>
+      <a href="#projects" data-section="projects">Projects</a>
+      <a href="#writeups" data-section="writeups">Articles and Writeups</a>
+      <a href="#contact" data-section="contact">Contact</a>
+      <span class="nav-caption">PORTFOLIO / FIELD NOTES</span>
+      <span class="nav-active-line" aria-hidden="true"></span>
+      <span class="scroll-progress" aria-hidden="true"><span></span></span>
+    </nav>
 
     <main id="main" class="editor-area">
-      <section class="view" id="panel-about" role="tabpanel" aria-labelledby="tab-about">
+      <section class="view" id="about" aria-labelledby="heading-about">
+        <div class="section-heading"><span>01 /</span><h2 id="heading-about">About</h2></div>
         <div class="about-columns"><section class="readme">
           <h1 class="profile-name"><span data-i18n="profileName">山口 暖</span> <span class="profile-reading" data-i18n="profileReading">（Hinata Yamaguchi）</span></h1>
           <div class="mobile-profile-summary">
@@ -71,49 +74,41 @@
         </div></aside></div></div>
       </section>
 
-      <section class="view workbench-view" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+      <section class="view" id="projects" aria-labelledby="heading-projects">
+        <div class="section-heading"><span>02 /</span><h2 id="heading-projects">Projects</h2></div>
         <div class="project-workbench">
-          <div class="mobile-file-picker">
-            <label for="project-file" data-i18n="projectSelect">PROJECT EXPLORER / ファイルを選択</label>
-            <select id="project-file" data-file-picker="projects" disabled><option>読み込み中…</option></select>
-          </div>
-          <aside class="project-explorer" aria-label="Project Explorer">
-            <div class="pane-heading"><span>Project Explorer</span><span class="pane-icons">⌕</span></div>
-            <nav class="project-nav" data-tree></nav>
-          </aside>
+          <nav class="project-selector" aria-label="Projects"><div data-tree></div></nav>
           <article class="project-document" aria-live="polite">
-            <div class="document-bar"><span data-doc-label></span><span class="doc-meta"><span>READ ONLY</span><button type="button" class="doc-expand" data-expand aria-pressed="false"><span class="expand-on" data-i18n="expand">⤢ 全画面</span><span class="expand-off" data-i18n="collapse">⤡ 戻る</span></button></span></div>
+            <div class="document-bar"><span data-doc-label></span><span class="doc-meta">PROJECT NOTES</span></div>
             <div class="project-article-inner" data-doc></div>
           </article>
         </div>
       </section>
 
-      <section class="view workbench-view" id="panel-writeups" role="tabpanel" aria-labelledby="tab-writeups" hidden>
-        <div class="project-workbench">
-          <div class="mobile-file-picker">
-            <label for="writeup-file" data-i18n="writeupSelect">WRITEUPS / ファイルを選択</label>
-            <select id="writeup-file" data-file-picker="writeups" disabled><option>読み込み中…</option></select>
+      <section class="view" id="writeups" aria-labelledby="heading-writeups">
+        <div class="section-heading"><span>03 /</span><h2 id="heading-writeups">Articles and Writeups</h2></div>
+        <div class="writeups-introduction">
+          <div>
+            <p class="project-eyebrow">REVERSING / SECURITY / CTF</p>
+            <h3 data-i18n="writeupsHeading">解析して、学んだことを残す。</h3>
+            <p class="writeups-description" data-i18n="writeupsDescription">Reversingを中心としたセキュリティの記事や、CTFのWriteupをまとめています。</p>
           </div>
-          <aside class="project-explorer" aria-label="Writeups">
-            <div class="pane-heading"><span>Writeups</span><span class="pane-icons">⌕</span></div>
-            <nav class="project-nav" data-tree></nav>
-          </aside>
-          <article class="project-document" aria-live="polite">
-            <div class="document-bar"><span data-doc-label></span><span class="doc-meta"><span>READ ONLY</span><button type="button" class="doc-expand" data-expand aria-pressed="false"><span class="expand-on" data-i18n="expand">⤢ 全画面</span><span class="expand-off" data-i18n="collapse">⤡ 戻る</span></button></span></div>
-            <div class="project-article-inner" data-doc></div>
-          </article>
+          <a class="writeups-destination" href="https://hughman0909.github.io/notes/"><span data-i18n="writeupsLink">記事・Writeupの一覧へ</span><span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
-      <section class="view" id="panel-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+      <section class="view" id="contact" aria-labelledby="heading-contact">
+        <div class="section-heading"><span>04 /</span><h2 id="heading-contact">Contact</h2></div>
         <div class="contact-panel">
           <div class="pane-heading"><span>Connections</span><span aria-hidden="true">↗</span></div>
           <div class="contact-body">
             <div class="subheading">01 / GET IN TOUCH</div>
-            <h1 class="contact-title">Let's connect.</h1>
+            <h3 class="contact-title">Let's connect.</h3>
             <p class="contact-description" data-i18n="contactIntro">インターン・アルバイト、開発やセキュリティに関するご連絡はこちらから。</p>
             <div class="contact-email-row">
-              <span class="contact-email">malsechugh09 [at] gmail.com</span>
+              <span class="contact-email" id="contact-email">malsechugh09 [at] gmail.com</span>
+              <button class="copy-email" type="button" data-copy-email="malsechugh09@gmail.com" aria-label="メールアドレスをコピー" data-i18n-aria="copyEmail">COPY</button>
+              <span class="copy-feedback" role="status" aria-live="polite"></span>
             </div>
             <div class="contact-section-heading"><span>02 / EXTERNAL LINKS</span><span>5 ENTRIES</span></div>
             <div id="contact-list" class="contact-list"></div>
@@ -121,7 +116,7 @@
         </div>
       </section>
     </main>
-    <footer class="statusbar"><span class="mobile-status">READY</span><span class="status-joke">still unpacking...</span><span class="mobile-status" data-i18n="editorStatus">UTF-8 / JA</span></footer>
+    <footer class="statusbar" aria-label="Workspace status"><span class="status-state">READY</span><span class="status-file"></span><span class="status-encoding" data-i18n="editorStatus">UTF-8 / JA</span></footer>
   </div>
 </body>
 </html>

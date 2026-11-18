@@ -1,25 +1,22 @@
 'use strict';
 const config = window.PORTFOLIO_CONTENT || {};
 config.contact ||= {};
-const tabs = ['about', 'projects', 'writeups', 'contact'];
 const $ = (selector, root=document) => root.querySelector(selector);
 const $$ = (selector, root=document) => Array.from(root.querySelectorAll(selector));
 const node = (tag, cls, text) => { const el=document.createElement(tag); if(cls)el.className=cls; if(text!==undefined)el.textContent=text; return el; };
 const isValidUrl = (value) => { try { return new URL(value).protocol==='https:'; } catch { return false; } };
-const panel = (name) => $('#panel-'+name);
-const mobileLayout = matchMedia('(max-width:699px)');
+const panel = (name) => document.getElementById(name);
 let lang = 'ja';
-let currentTab = null;
 
 // Japanese originals come from the HTML so they are not duplicated in content.js.
 const original = new Map();
 $$('[data-i18n]').forEach(el=>original.set(el,el.textContent));
 $$('[data-i18n-aria]').forEach(el=>original.set(el,el.getAttribute('aria-label')));
 
-// Tabs that show an explorer tree + a document pane.
+// Markdown collections shared by the portfolio, archive and article reader.
 const collections = {
-  projects: { items: [], root: 'projects/', label: p => p.id+'.md', render: renderProject },
-  writeups: { items: [], root: 'writeups/', label: w => w.id+'.md', render: renderWriteup },  // filled by loadMarkdownCollection()
+  projects: { items: [], label: p => p.id+'.md', render: renderProject },
+  writeups: { items: [] },
 };
 const active = { projects: undefined, writeups: undefined };
 const localized = (item) => ({ ...item, ...item[lang] });
@@ -62,7 +59,7 @@ function renderMarkdown(src,base=location.href) {
   $$('a[href]',root).forEach(link=>{
     const href=link.getAttribute('href');
     if(href.startsWith('#')) {
-      // Scroll inside the document without changing the application's tab route.
+      // Scroll inside the document without changing the section/file route.
       link.addEventListener('click',event=>{
         event.preventDefault();
         let id; try { id=decodeURIComponent(href.slice(1)); } catch { return; }
@@ -120,34 +117,31 @@ function renderProject(p) {
   out.push(linkRow([['Source repository',p.repo],['Live demo',p.demo]]));
   return out;
 }
-function renderWriteup(w) {
-  const out=docHeader([w.date,w.event].filter(Boolean).join(' / '), w.title, w.summary);
-  if(w.body) out.push(renderMarkdown(w.body,w.base));
-  out.push(linkRow([[lang==='en'?'Read the full writeup':'元記事を読む', w.url]],false));
-  return out;
-}
-
 function renderTree(name) {
-  const { items, root } = collections[name];
+  const { items } = collections[name];
+  if(document.body.classList.contains('writeups-page')) {
+    const list=$('#writeups-list');
+    list.replaceChildren(...items.map(localized).map(item=>{
+      const link=node('a','writeup-entry');
+      link.href='article.html?'+new URLSearchParams({collection:name,id:item.id,lang});
+      link.append(node('span','project-eyebrow',[item.date,item.event].filter(Boolean).join(' / ') || 'FIELD NOTES'),node('h2','',item.title),node('p','',item.summary || ''),node('span','writeup-read',lang==='en'?'Read article →':'記事を読む →'));
+      return link;
+    }));
+    return;
+  }
   const children=node('div','tree-children');
   items.map(localized).forEach(item=>{
     const b=node('button','tree-item'); b.type='button'; b.dataset.select=name+'/'+item.id;
     b.append(node('span','tree-glyph','◈'), node('span','tree-label',item.title));
     children.append(b);
   });
-  $('[data-tree]',panel(name)).replaceChildren(node('div','tree-dir','▾ '+root), children);
-  const picker=$('[data-file-picker]',panel(name));
-  picker.replaceChildren(...items.map(localized).map(item=>{
-    const option=node('option','',[item.number,item.title].filter(Boolean).join(' / ')); option.value=item.id; return option;
-  }));
-  picker.disabled=!items.length;
-  picker.value=active[name] || items[0]?.id || '';
+  $('[data-tree]',panel(name)).replaceChildren(children);
 }
 function showItem(name,id) {
+  if(document.body.classList.contains('writeups-page')) return;
   const c=collections[name];
   const found=c.items.find(i=>i.id===id) || c.items[0]; if(!found)return;
   active[name]=found.id;
-  $('[data-file-picker]',panel(name)).value=found.id;
   const item=localized(found), root=panel(name);
   $('[data-doc-label]',root).textContent=c.label(item);
   const doc=$('[data-doc]',root); doc.replaceChildren(...c.render(item)); doc.scrollTop=0;
@@ -155,6 +149,7 @@ function showItem(name,id) {
     const selected=b.dataset.select===name+'/'+found.id;
     b.classList.toggle('selected',selected); b.setAttribute('aria-pressed',String(selected));
   });
+  document.dispatchEvent(new CustomEvent('portfolio:project',{detail:{name,id:found.id}}));
 }
 
 // ---- Markdown collections: foo.en.md is the English version of foo.md.
@@ -182,10 +177,11 @@ async function listMarkdownFiles(name) {
 }
 function showCollectionMessage(name,ja,en) {
   collections[name].message={ja,en};
+  if(document.body.classList.contains('writeups-page')) {
+    $('#writeups-list').replaceChildren(node('p','archive-message',lang==='en'?en:ja)); return;
+  }
   const root=panel(name);
-  const picker=$('[data-file-picker]',root);
-  picker.replaceChildren(node('option','',lang==='en'?en:ja)); picker.disabled=true;
-  $('[data-tree]',root).replaceChildren(node('div','tree-dir','▾ '+name+'/'));
+  $('[data-tree]',root).replaceChildren();
   $('[data-doc-label]',root).textContent=name+'/';
   $('[data-doc]',root).replaceChildren(node('p','muted-placeholder',lang==='en'?en:ja));
 }
@@ -193,8 +189,8 @@ async function loadMarkdownCollection(name) {
   showCollectionMessage(name,'読み込み中…','Loading…');
   try {
     const { files, dev } = await listMarkdownFiles(name);
-    // Ignored templates can still be previewed locally. Missing files on the live site are skipped.
-    const candidates=[...new Set([...files,'sample.md','sample.en.md'])];
+    // The dev server includes local templates; the published index excludes them.
+    const candidates=[...new Set(files)];
     const entries=await Promise.all(candidates.map(async rel=>{
       const res=await fetch(name+'/'+rel,{cache:'no-cache'}).catch(()=>null);
       if(!res?.ok) return null;
@@ -212,7 +208,7 @@ async function loadMarkdownCollection(name) {
         ? String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true}) || a.id.localeCompare(b.id)
         : String(b.date||'').localeCompare(String(a.date||'')) || a.id.localeCompare(b.id));
     collections[name].items.splice(0, Infinity, ...items);
-    if(!items.length) return showCollectionMessage(name,name+'/ に .md ファイルがまだありません。','No .md files in '+name+'/ yet.');
+    if(!items.length) return showCollectionMessage(name,'記事は準備中です。','Articles are coming soon.');
     delete collections[name].message;
     renderTree(name); showItem(name,active[name]);
     if(dev && !window.__reloadStream) window.__reloadStream=Object.assign(new EventSource('/__reload'),{ onmessage:()=>location.reload() });
@@ -241,19 +237,6 @@ function renderContact() {
     link.append(node('span','contact-index',String(index+1).padStart(2,'0')),icon,text,node('span','contact-arrow','↗')); root.append(link);
   });
 }
-function setFocus(on) {
-  $('.app-window').classList.toggle('focus-doc',on);
-  $$('[data-expand]').forEach(b=>b.setAttribute('aria-pressed',String(on)));
-}
-function setTab(name, updateHash=false) {
-  if(!tabs.includes(name))name='about';
-  $$('[data-tab]').forEach(b=>{ const selected=b.dataset.tab===name; b.classList.toggle('active',selected); b.setAttribute('aria-selected',String(selected)); b.tabIndex=selected?0:-1; });
-  tabs.forEach(t=>panel(t).hidden=t!==name);
-  $('#current-location').textContent=name;
-  if(name!==currentTab) { $('#main').scrollTop=0; if(mobileLayout.matches) window.scrollTo({top:0}); setFocus(false); }
-  currentTab=name;
-  if(updateHash) { const target='#'+name+(collections[name] && active[name] ? '/'+active[name] : ''); if(location.hash!==target) history.pushState(null,'',target); }
-}
 function setLanguage(next) {
   lang=next==='en'?'en':'ja';
   const dict=lang==='en'?config.en:{};
@@ -267,44 +250,36 @@ function setLanguage(next) {
   });
   try { localStorage.setItem('lang',lang); } catch {}
 }
-function readLocation() {
-  const [rawTab,...rest]=decodeURIComponent(location.hash.slice(1)).split('/');
-  const rawItem=rest.join('/');
-  if(collections[rawTab]&&rawItem) { active[rawTab]=rawItem; showItem(rawTab,rawItem); }
-  setTab(rawTab);
-}
-
-renderContact();
-let savedLang=null; try { savedLang=localStorage.getItem('lang'); } catch {}
-setLanguage(savedLang); readLocation(); Object.keys(collections).forEach(loadMarkdownCollection);
-window.addEventListener('popstate',readLocation);
-// The native mobile picker stays one control tall regardless of the article count.
-$$('[data-file-picker]').forEach(picker=>picker.addEventListener('change',()=>{
-  const name=picker.dataset.filePicker;
-  showItem(name,picker.value); setTab(name,true);
-}));
-document.addEventListener('keydown',event=>{ if(event.key==='Escape')setFocus(false); });
-document.addEventListener('click',event=>{
-  const langButton=event.target.closest('[data-lang]');
-  if(langButton) { setLanguage(langButton.dataset.lang); return; }
-  const expand=event.target.closest('[data-expand]');
-  if(expand) { setFocus(expand.getAttribute('aria-pressed')!=='true'); return; }
-  const select=event.target.closest('[data-select]');
-  if(select) {
-    const [name,...rest]=select.dataset.select.split('/'); const id=rest.join('/');
-    showItem(name,id); setTab(name,true);
+function readLocation(event) {
+  // A delayed hashchange must read its own URL, not a newer file-selection URL.
+  const hash=event?.newURL?new URL(event.newURL).hash:location.hash;
+  let route; try { route=decodeURIComponent(hash.slice(1)); } catch { return; }
+  const [name,...rest]=route.split('/');
+  if(name==='writeups' && rest.length && !document.body.classList.contains('writeups-page')) {
+    location.replace('article.html?'+new URLSearchParams({collection:'writeups',id:rest.join('/'),lang}));
     return;
   }
-  const tab=event.target.closest('[data-tab]');
-  if(tab) setTab(tab.dataset.tab,true);
-});
-const tabButtons=$$('[role=tab]');
-tabButtons.forEach((tab,index)=>{
-  tab.addEventListener('keydown',event=>{
-    if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-    event.preventDefault();
-    const n=tabButtons.length;
-    const target=event.key==='Home'?0:event.key==='End'?n-1:(index+(event.key==='ArrowRight'?1:-1)+n)%n;
-    tabButtons[target].focus(); setTab(tabButtons[target].dataset.tab,true);
+  if(name==='projects' && rest.length) showItem(name,rest.join('/'));
+  if(name==='projects' && rest.length) active.projects=rest.join('/');
+  // Plain section anchors use native scrolling; only legacy file routes need help.
+  if(rest.length) panel(name)?.scrollIntoView({block:'start'});
+}
+
+if (!document.body.classList.contains('reader-page')) {
+  const archive=document.body.classList.contains('writeups-page');
+  if(!archive) renderContact();
+  let savedLang=null; try { savedLang=localStorage.getItem('lang'); } catch {}
+  setLanguage(savedLang); readLocation();
+  loadMarkdownCollection(archive?'writeups':'projects');
+  window.addEventListener('hashchange',readLocation);
+  document.addEventListener('click',event=>{
+    const langButton=event.target.closest('[data-lang]');
+    if(langButton) { setLanguage(langButton.dataset.lang); return; }
+    const select=event.target.closest('[data-select]');
+    if(select) {
+      const [name,...rest]=select.dataset.select.split('/');
+      showItem(name,rest.join('/'));
+      history.replaceState(null,'','#'+name+'/'+rest.map(encodeURIComponent).join('/'));
+    }
   });
-});
+}

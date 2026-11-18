@@ -1,6 +1,6 @@
 ---
 title: x86 Deobfuscation Lifter
-number: 03
+number: 02
 label: TOOL
 subtitle: A lifter that makes obfuscated x86 binaries easier to analyze.
 ---

@@ -10,9 +10,12 @@ window.PORTFOLIO_CONTENT = {
   // The Japanese originals are read from the HTML itself.
   en: {
     home: 'Portfolio home',
+    copyEmail: 'Copy email address',
+    writeupsHeading: 'Notes from taking things apart.',
+    writeupsDescription: 'Security articles focused on reversing, alongside CTF writeups.',
+    writeupsLink: 'Browse articles & writeups',
+    writeupsIntro: 'Analysis notes, CTF solutions, and security research.',
     profileName: 'Hinata Yamaguchi',
-    projectSelect: 'PROJECT EXPLORER / Select a file',
-    writeupSelect: 'WRITEUPS / Select a file',
     editorStatus: 'UTF-8 / EN',
     profileReading: '',
     contactIntro: 'For internships, part-time work, development, or security — get in touch.',
@@ -27,9 +30,7 @@ window.PORTFOLIO_CONTENT = {
     goal2: 'Join Security Camp Connect as a tutor',
     goal3: 'Pass the Registered Information Security Specialist Examination',
     goal4: 'Study HTB, Pwn, AI security, LLMs, and machine learning, with Rev as the top priority',
-    hobbies: 'Music / Football',
-    expand: '⤢ Expand',
-    collapse: '⤡ Back'
+    hobbies: 'Music / Football'
   },
   // Projects and writeups are Markdown files in their respective folders.
   // See projects/README.txt and writeups/README.txt.
